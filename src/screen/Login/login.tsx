@@ -1,28 +1,30 @@
-import { useMutation } from "@tanstack/react-query";
 import "./login.scss";
-import { login } from "../../data/api/auth";
+import { useLogin } from "../../data/mutation/login/login-mutation";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const loginMutation = useMutation(
-    (credentials: { email: string; password: string }) =>
-      login(credentials.email, credentials.password)
-  );
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    loginMutation.mutate({ email, password });
+  const { mutateAsync: loginMutate } = useLogin();
+  const navigate = useNavigate();
+  const handleLogin = async (e: any) => {
+    try {
+      e.preventDefault();
+      const { data } = await loginMutate({ email, password });
+      localStorage.setItem("accessToken", JSON.stringify(data.token));
+      navigate("/");
+    } catch (error) {
+      alert(error);
+      console.log(error);
+    }
   };
-
   return (
     <div>
       <section>
         <div className="form-box">
           <div className="form-value">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleLogin}>
               <h2>Login</h2>
               <div className="inputbox">
                 <input
@@ -51,7 +53,6 @@ const LoginPage = () => {
                 </label>
               </div>
               <button type="submit">Log in</button>
-              <span className="text">Wrong email or password!</span>
             </form>
           </div>
         </div>
