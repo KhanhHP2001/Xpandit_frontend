@@ -7,7 +7,9 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { mutateAsync: loginMutate } = useLogin();
+  
   const navigate = useNavigate();
+
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
@@ -21,6 +23,11 @@ const LoginPage = () => {
       console.log(error);
     }
   };
+  
+  const nagivateToRegister = () => {
+    navigate("/register");
+  }
+
   return (
     <div>
       <section>
@@ -55,6 +62,7 @@ const LoginPage = () => {
                 </label>
               </div>
               <button type="submit">Log in</button>
+              <button type="submit" onClick={nagivateToRegister}>Register</button>
             </form>
           </div>
         </div>
