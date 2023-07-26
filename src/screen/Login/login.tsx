@@ -1,6 +1,6 @@
 import "./login.scss";
 import { useLogin } from "../../data/mutation/login/login-mutation";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
@@ -8,11 +8,13 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const { mutateAsync: loginMutate } = useLogin();
   const navigate = useNavigate();
-  const handleLogin = async (e: any) => {
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
       const { data } = await loginMutate({ email, password });
       localStorage.setItem("accessToken", JSON.stringify(data.token));
+      console.log(data);
+
       navigate("/");
     } catch (error) {
       alert(error);
