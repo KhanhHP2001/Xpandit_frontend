@@ -5,15 +5,11 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormHelperText from "@mui/material/FormHelperText";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import {
-  EmployeesEntity,
-  EmployeesStatus,
-} from "../../../data/query/home/home-query";
+import { EmployeesEntity } from "../../../data/query/home/home-query";
+import { useUploadImage } from "../../../data/mutation/home/home-mutation";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 interface FormProps {
   getValue: (value: EmployeesEntity) => void;
@@ -23,11 +19,14 @@ export default function FormDialog(props: FormProps) {
   const { getValue } = props;
 
   const [open, setOpen] = useState(false);
-  const [age, setAge] = useState("");
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value);
-  };
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [workingDate, setWorkingDate] = useState(0);
+  const [dateOff, setDateOff] = useState(0);
+  const [salary, setSalary] = useState(0);
+  const [date, setDate] = useState("");
+  const [imageData, setImageData] = useState("");
+  const { mutateAsync: uploadMutate } = useUploadImage();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -35,7 +34,38 @@ export default function FormDialog(props: FormProps) {
 
   const handleClose = () => {
     setOpen(false);
-    getValue
+  };
+
+  const handleSubmit = () => {
+    if (name && email && workingDate && dateOff && salary && date) {
+      setOpen(false);
+      getValue({
+        email: email,
+        name: name,
+        date: date,
+        working_date: workingDate,
+        date_off: dateOff,
+        salary_per_date: salary,
+        avatar: imageData,
+      });
+    } else {
+      alert("please input correct data");
+    }
+  };
+
+  const handleImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const formData = new FormData();
+    if (event.target.files && event.target.files.length > 0) {
+      formData.append("file", event.target.files[0]);
+      try {
+        const data = await uploadMutate(formData);
+        setImageData(data.data.Location);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   return (
@@ -53,10 +83,24 @@ export default function FormDialog(props: FormProps) {
           <TextField
             autoFocus
             margin="dense"
-            id="id"
-            label="Employees Id"
+            id="email"
+            label="Employees email"
             fullWidth
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
           />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              value={date}
+              onChange={(e) => {
+                if (e) {
+                  setDate(e);
+                }
+              }}
+            />
+          </LocalizationProvider>
           <TextField
             autoFocus
             margin="dense"
@@ -64,46 +108,54 @@ export default function FormDialog(props: FormProps) {
             label="Employees name"
             type="text"
             fullWidth
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
           />
           <TextField
             autoFocus
             margin="dense"
             id="working-date"
             label="Working date"
+            type="number"
             fullWidth
+            value={workingDate}
+            onChange={(e) => {
+              setWorkingDate(parseInt(e.target.value));
+            }}
           />
           <TextField
             autoFocus
             margin="dense"
             id="date-off"
             label="Date off"
+            type="number"
             fullWidth
+            value={dateOff}
+            onChange={(e) => {
+              setDateOff(parseInt(e.target.value));
+            }}
           />
           <TextField
             autoFocus
             margin="dense"
             id="salary"
-            label="Salary per hour"
+            label="Salary per date"
+            type="number"
             fullWidth
+            value={salary}
+            onChange={(e) => {
+              setSalary(parseInt(e.target.value));
+            }}
           />
-          <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="demo-simple-select-helper-label">Age</InputLabel>
-            <Select
-              labelId="demo-simple-select-helper-label"
-              id="demo-simple-select-helper"
-              value={age}
-              label="Status"
-              onChange={handleChange}
-            >
-              <MenuItem value={EmployeesStatus.Approve}>Approve</MenuItem>
-              <MenuItem value={EmployeesStatus.Pending}>Pending</MenuItem>
-            </Select>
-            <FormHelperText>With label + helper text</FormHelperText>
-          </FormControl>
+          <div>
+            <input type="file" onChange={handleImageChange} />
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Add Employees</Button>
+          <Button onClick={handleSubmit}>Add Employees</Button>
         </DialogActions>
       </Dialog>
     </div>

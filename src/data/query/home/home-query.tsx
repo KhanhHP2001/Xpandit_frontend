@@ -5,10 +5,11 @@ export enum EmployeesStatus {
 }
 
 export type EmployeesEntity = {
-  id: string;
+  email: string;
+  date: string;
   name: string;
-  workingDate: string;
-  dateOff: string;
-  salary: string;
-  status: EmployeesStatus;
+  working_date: number;
+  date_off: number;
+  salary_per_date: number;
+  avatar?: string;
 };

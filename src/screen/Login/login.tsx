@@ -15,8 +15,6 @@ const LoginPage = () => {
       e.preventDefault();
       const { data } = await loginMutate({ email, password });
       localStorage.setItem("accessToken", JSON.stringify(data.token));
-      console.log(data);
-
       navigate("/");
     } catch (error) {
       alert(error);
