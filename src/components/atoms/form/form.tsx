@@ -74,7 +74,7 @@ export default function FormDialog(props: FormProps) {
         Add Employees
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle style={{ color: "black" }}>Add new Employees</DialogTitle>
         <DialogContent
           style={{
             padding: 20,

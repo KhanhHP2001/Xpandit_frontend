@@ -1,5 +1,5 @@
 import "./home.scss";
-// import Featured from "../../components/morecules/featured/Featured";
+import Featured from "../../components/morecules/featured/Featured";
 import List from "../../components/morecules/table/Table";
 import Sidebar from "../../components/morecules/sidebar/Sidebar";
 import Navbar from "../../components/morecules/navbar/Navbar";
@@ -24,6 +24,7 @@ const HomePage = () => {
       <Sidebar />
       <div className="homeContainer">
         <Navbar />
+        <Featured />
         <div className="widgets">
           <FormDialog
             getValue={(value: EmployeesEntity) => {

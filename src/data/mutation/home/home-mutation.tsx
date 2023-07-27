@@ -1,6 +1,6 @@
 // Example usage in another file
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, } from "@tanstack/react-query";
 import { axiosInstance, imageInstance } from "../../api/axios";
 import { EmployeesEntity } from "../../query/home/home-query";
 
@@ -28,4 +28,12 @@ export const uploadImage = async (
 
 export const useUploadImage = () => {
   return useMutation((img: FormData) => uploadImage(img));
+};
+
+export const getEmployees = async () => {
+  const response = await axiosInstance.get("/api/employee");
+  return response.data;
+};
+export const useEmployees = () => {
+  return useMutation(() => getEmployees());
 };
