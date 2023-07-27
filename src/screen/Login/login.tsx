@@ -7,7 +7,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { mutateAsync: loginMutate } = useLogin();
-  
+
   const navigate = useNavigate();
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
@@ -15,13 +15,15 @@ const LoginPage = () => {
       e.preventDefault();
       const { data } = await loginMutate({ email, password });
       localStorage.setItem("accessToken", JSON.stringify(data.token));
+      localStorage.setItem("role", JSON.stringify(data.user.role));
+      localStorage.setItem("id", JSON.stringify(data.user._id));
       navigate("/");
     } catch (error) {
       alert(error);
       console.log(error);
     }
   };
-  
+
   const nagivateToRegister = () => {
     navigate("/register");
   }
