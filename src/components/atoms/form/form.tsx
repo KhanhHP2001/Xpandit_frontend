@@ -21,9 +21,9 @@ export default function FormDialog(props: FormProps) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [workingDate, setWorkingDate] = useState(0);
-  const [dateOff, setDateOff] = useState(0);
-  const [salary, setSalary] = useState(0);
+  const [workingDate, setWorkingDate] = useState("");
+  const [dateOff, setDateOff] = useState("");
+  const [salary, setSalary] = useState("");
   const [date, setDate] = useState("");
   const [imageData, setImageData] = useState("");
   const { mutateAsync: uploadMutate } = useUploadImage();
@@ -34,6 +34,17 @@ export default function FormDialog(props: FormProps) {
 
   const handleClose = () => {
     setOpen(false);
+    clearCache();
+  };
+
+  const clearCache = () => {
+    setName("");
+    setEmail("");
+    setWorkingDate("");
+    setDateOff("");
+    setSalary("");
+    setDate("");
+    setImageData("");
   };
 
   const handleSubmit = () => {
@@ -43,11 +54,12 @@ export default function FormDialog(props: FormProps) {
         email: email,
         name: name,
         date: date,
-        working_date: workingDate,
-        date_off: dateOff,
-        salary_per_date: salary,
+        working_date: parseInt(workingDate),
+        date_off: parseInt(dateOff),
+        salary_per_date: parseInt(salary),
         avatar: imageData,
       });
+      clearCache();
     } else {
       alert("please input correct data");
     }
@@ -114,15 +126,15 @@ export default function FormDialog(props: FormProps) {
             }}
           />
           <TextField
-            autoFocus
-            margin="dense"
-            id="working-date"
+            id="date-off"
             label="Working date"
             type="number"
+            margin="dense"
             fullWidth
             value={workingDate}
             onChange={(e) => {
-              setWorkingDate(parseInt(e.target.value));
+              const newValue = e.target.value.replace(/[^0-9]/g, "");
+              setWorkingDate(newValue);
             }}
           />
           <TextField
@@ -134,7 +146,8 @@ export default function FormDialog(props: FormProps) {
             fullWidth
             value={dateOff}
             onChange={(e) => {
-              setDateOff(parseInt(e.target.value));
+              const newValue = e.target.value.replace(/[^0-9]/g, "");
+              setDateOff(newValue);
             }}
           />
           <TextField
@@ -146,7 +159,8 @@ export default function FormDialog(props: FormProps) {
             fullWidth
             value={salary}
             onChange={(e) => {
-              setSalary(parseInt(e.target.value));
+              const newValue = e.target.value.replace(/[^0-9]/g, "");
+              setSalary(newValue);
             }}
           />
           <div>

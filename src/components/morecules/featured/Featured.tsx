@@ -1,39 +1,25 @@
 import "./featured.scss";
-import { useState, useEffect } from "react";
-import PeopleIcon from '@mui/icons-material/People';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import { useEmployees } from "../../../data/mutation/home/home-mutation";
-const Featured = () => {
-  const [employees, setEmployees] = useState([]);
-  const { mutateAsync: employeesMutate } = useEmployees();
-  const totalEmployees = 100;
+import PeopleIcon from "@mui/icons-material/People";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+
+interface FeatureProps {
+  employeesLength: number;
+}
+
+const Featured = (props: FeatureProps) => {
+  const { employeesLength } = props;
+
   const totalSalaryThisMonth = 15000;
-
-  const getEmployees = async () => {
-    try {
-      const dataEmployees = await employeesMutate();
-      setEmployees(dataEmployees);
-    }
-    catch (error) {
-      console.log(error);
-    }
-  };
-
-
-  useEffect(() => {
-    getEmployees();
-  }, []);
 
   return (
     <div className="featured">
-
       <div className="box">
         <div className="top">
           <h1 className="title">Total Employees</h1>
         </div>
         <div className="bottom">
           <PeopleIcon style={{ fontSize: 50 }} />
-          <p className="amount">{employees.length}</p>
+          <p className="amount">{employeesLength}</p>
           <p className="desc">Total employees in the company</p>
         </div>
       </div>

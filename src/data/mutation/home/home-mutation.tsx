@@ -1,10 +1,20 @@
 // Example usage in another file
 
-import { useMutation, } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance, imageInstance } from "../../api/axios";
 import { EmployeesEntity } from "../../query/home/home-query";
 
-// Make a POST request with the custom Axios instance
+const employeesKey = "employees";
+
+export const getEmployees = async () => {
+  const response = await axiosInstance.get("/api/employee");
+  return response.data;
+};
+
+export const useEmployees = () => {
+  return useQuery([employeesKey], getEmployees);
+};
+
 export const setNewEmployees = async (employeesParams: EmployeesEntity) => {
   const dataAxiosInstance = await axiosInstance.post(
     "/api/employee",
@@ -14,8 +24,14 @@ export const setNewEmployees = async (employeesParams: EmployeesEntity) => {
 };
 
 export const useSubmitEmployees = () => {
-  return useMutation((employeesParams: EmployeesEntity) =>
-    setNewEmployees(employeesParams)
+  const queryClient = useQueryClient();
+  return useMutation(
+    (employeesParams: EmployeesEntity) => setNewEmployees(employeesParams),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([employeesKey]);
+      },
+    }
   );
 };
 
@@ -30,10 +46,18 @@ export const useUploadImage = () => {
   return useMutation((img: FormData) => uploadImage(img));
 };
 
-export const getEmployees = async () => {
-  const response = await axiosInstance.get("/api/employee");
-  return response.data;
+export const deleteEmployees = async (id: string) => {
+  const response = await imageInstance.patch("/api/employee/softDelete", {
+    employee_ids: [id],
+  });
+  return response;
 };
-export const useEmployees = () => {
-  return useMutation(() => getEmployees());
+
+export const useDeleteEmployees = () => {
+  const queryClient = useQueryClient();
+  return useMutation((id: string) => deleteEmployees(id), {
+    onSuccess: () => {
+      queryClient.invalidateQueries([employeesKey]);
+    },
+  });
 };
