@@ -27,5 +27,4 @@ export const router = createBrowserRouter([
     path: routerPath.paymentPath,
     element: <Payment />,
   },
-
 ]);

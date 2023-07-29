@@ -8,10 +8,14 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const toggleDropdown = () => {
-  setShowDropdown((prevState) => !prevState);
+    setShowDropdown((prevState) => !prevState);
   };
   const nagivateToUserProfile = () => {
     navigate("/userProfile");
+  };
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
   };
 
   return (
@@ -34,7 +38,7 @@ const Navbar = () => {
                 <div className="dropdown-item" onClick={nagivateToUserProfile}>
                   <AccountBoxIcon style={{ fontSize: 12 }} /> User Profile
                 </div>
-                <div className="dropdown-item">
+                <div className="dropdown-item" onClick={handleLogout}>
                   <LogoutIcon style={{ fontSize: 12 }} /> Log Out
                 </div>
               </div>
