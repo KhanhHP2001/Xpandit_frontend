@@ -19,7 +19,7 @@ const HomePage = () => {
   const { mutateAsync: submitMutate } = useSubmitEmployees();
   const [employees, setEmployees] = useState<EmployeesEntity[]>([]);
   const [sideNavigate, setSideNavigate] = useState(SidebarType.main);
-  const { data, isLoading, isError } = useEmployees();
+  const { data, isLoading } = useEmployees();
   const navigate = useNavigate();
 
   const isAuthenticated = () => {
@@ -53,10 +53,6 @@ const HomePage = () => {
         <CircularProgress />
       </div>
     );
-  }
-
-  if (isError) {
-    window.location.reload();
   }
 
   return (

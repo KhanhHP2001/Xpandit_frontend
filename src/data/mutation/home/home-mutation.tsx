@@ -12,7 +12,9 @@ export const getEmployees = async () => {
 };
 
 export const useEmployees = () => {
-  return useQuery([employeesKey], getEmployees);
+  return useQuery([employeesKey], getEmployees, {
+    retry: 10,
+  });
 };
 
 export const setNewEmployees = async (employeesParams: EmployeesEntity) => {
