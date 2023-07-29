@@ -73,7 +73,7 @@ const List = (props: ListProps) => {
                 <TableCell className="tableCell">{item._id}</TableCell>
               )}
               <TableCell className="tableCell">
-                <img src={item.avatar} alt="" className="image" />
+                <img src={item.avatar?.url} alt="" className="image" />
                 {item.name}
               </TableCell>
               <TableCell className="tableCell">{item.email}</TableCell>
