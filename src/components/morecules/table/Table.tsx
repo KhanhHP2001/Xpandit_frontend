@@ -17,6 +17,7 @@ import Button from "@mui/material/Button";
 import { EmployeesEntity, FormType } from "../../../data/query/home/home-query";
 import dayjs from "dayjs";
 import { SidebarType } from "../sidebar/Sidebar";
+import { Avatar } from "@mui/material";
 
 interface ListProps {
   listData: EmployeesEntity[];
@@ -54,7 +55,7 @@ const List = (props: ListProps) => {
             {type == SidebarType.employees && (
               <TableCell className="tableCell">User ID</TableCell>
             )}
-            <TableCell className="tableCell">Name</TableCell>
+            <TableCell className="tableCell">User</TableCell>
             <TableCell className="tableCell">Email</TableCell>
             <TableCell className="tableCell">Date</TableCell>
             <TableCell className="tableCell">Working date</TableCell>
@@ -73,8 +74,14 @@ const List = (props: ListProps) => {
                 <TableCell className="tableCell">{item._id}</TableCell>
               )}
               <TableCell className="tableCell">
-                <img src={item.avatar?.url} alt="" className="image" />
-                {item.name}
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <Avatar
+                    alt={item.avatar?.key}
+                    src={item.avatar?.url}
+                    style={{ marginRight: 10 }}
+                  />
+                  <div>{item.name}</div>
+                </div>
               </TableCell>
               <TableCell className="tableCell">{item.email}</TableCell>
               <TableCell className="tableCell">

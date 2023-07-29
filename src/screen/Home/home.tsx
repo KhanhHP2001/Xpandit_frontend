@@ -6,11 +6,11 @@ import Sidebar, {
 } from "../../components/morecules/sidebar/Sidebar";
 import Navbar from "../../components/morecules/navbar/Navbar";
 import FormDialog from "../../components/atoms/form/form";
-import { EmployeesEntity } from "../../data/query/home/home-query";
 import {
+  EmployeesEntity,
   useEmployees,
-  useSubmitEmployees,
-} from "../../data/mutation/home/home-mutation";
+} from "../../data/query/home/home-query";
+import { useSubmitEmployees } from "../../data/mutation/home/home-mutation";
 import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,7 @@ const HomePage = () => {
   const { mutateAsync: submitMutate } = useSubmitEmployees();
   const [employees, setEmployees] = useState<EmployeesEntity[]>([]);
   const [sideNavigate, setSideNavigate] = useState(SidebarType.main);
-  const { data, isLoading } = useEmployees();
+  const { data, isLoading, isError } = useEmployees();
   const navigate = useNavigate();
 
   const isAuthenticated = () => {
@@ -53,6 +53,10 @@ const HomePage = () => {
         <CircularProgress />
       </div>
     );
+  }
+
+  if (isError) {
+    window.location.reload();
   }
 
   return (

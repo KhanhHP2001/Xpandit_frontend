@@ -1,4 +1,6 @@
 import { FileResponseDto } from "../../mutation/home/home-mutation";
+import { useQuery } from "@tanstack/react-query";
+import { axiosInstance } from "../../api/axios";
 
 export enum EmployeeStatus {
   approved = "Approved",
@@ -22,4 +24,15 @@ export type EmployeesEntity = {
   avatar?: FileResponseDto;
   status?: string;
   _id?: string;
+};
+
+export const employeesKey = "employees";
+
+export const getEmployees = async () => {
+  const response = await axiosInstance.get("/api/employee");
+  return response.data;
+};
+
+export const useEmployees = () => {
+  return useQuery([employeesKey], getEmployees);
 };

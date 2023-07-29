@@ -227,7 +227,7 @@ export default function FormDialog(props: FormProps) {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>Cancel</Button>\
           <Button onClick={handleSubmit}>
             {type == FormType.submit ? "Add Employees" : "Update Employees"}
           </Button>

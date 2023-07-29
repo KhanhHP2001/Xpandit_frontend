@@ -39,28 +39,37 @@ export const useSubmitEmployees = () => {
   );
 };
 
-export interface FileResponseDto {key: string, url: string};
+export interface FileResponseDto {
+  key: string;
+  url: string;
+}
 
-export const uploadImage = async (file: File): Promise<FileResponseDto | undefined> => {
-    const current = new Date();
-    const currentTime = current.getTime();
-    const filename = `${currentTime}${file.name}`;
-    const params = new PutObjectCommand({ 
-        Bucket: 'my-whatsapp-bucket',
-        Key: String(filename),
-        Body: file,
-        ACL: 'public-read',
-        ContentType: file.type });
-    try {
-          const response = await s3Client.send(params);
-          if(response) return {
-            key: filename,
-            url: `https://${'my-whatsapp-bucket'}.s3.amazonaws.com/${filename}`
-          }
-        } catch (error) {
-          console.error("Error uploading file:", error);
-        }
-      return undefined;
+export const uploadImage = async (
+  file: File
+): Promise<FileResponseDto | undefined> => {
+  const current = new Date();
+  const currentTime = current.getTime();
+  const filename = `${currentTime}${file.name}`;
+  const params = new PutObjectCommand({
+    Bucket: import.meta.env.VITE_AWS_IMAGE_BUCKET_NAME,
+    Key: String(filename),
+    Body: file,
+    ACL: "public-read",
+    ContentType: file.type,
+  });
+  try {
+    const response = await s3Client.send(params);
+    if (response)
+      return {
+        key: filename,
+        url: `https://${
+          import.meta.env.VITE_AWS_IMAGE_BUCKET_NAME
+        }.s3.amazonaws.com/${filename}`,
+      };
+  } catch (error) {
+    console.error("Error uploading file:", error);
+  }
+  return undefined;
 };
 
 export const useUploadImage = () => {

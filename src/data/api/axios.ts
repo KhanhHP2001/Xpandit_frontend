@@ -1,11 +1,9 @@
 // src/api/auth.ts
 import axios, { AxiosInstance } from "axios";
 
-// const apiUrl = process.env.REACT_APP_API_URL;
-const BaseURL =
-  "https://0y7kmzylv3.execute-api.ap-southeast-1.amazonaws.com/dev";
-
 const token = localStorage.getItem("accessToken");
+
+const BaseURL = import.meta.env.VITE_REACT_APP_API_URL;
 
 export const axiosInstance: AxiosInstance = axios.create({
   baseURL: BaseURL,
