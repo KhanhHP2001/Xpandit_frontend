@@ -13,12 +13,25 @@ import {
 } from "../../data/mutation/home/home-mutation";
 import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const { mutateAsync: submitMutate } = useSubmitEmployees();
   const [employees, setEmployees] = useState<EmployeesEntity[]>([]);
   const [sideNavigate, setSideNavigate] = useState(SidebarType.main);
   const { data, isLoading } = useEmployees();
+  const navigate = useNavigate();
+
+  const isAuthenticated = () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      navigate("/login");
+    }
+  };
+
+  useEffect(() => {
+    isAuthenticated();
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -28,8 +41,7 @@ const HomePage = () => {
 
   const handleSubmit = async (value: EmployeesEntity) => {
     try {
-      const response = await submitMutate(value);
-      console.log(response);
+      await submitMutate(value);
     } catch (e) {
       console.log(e);
     }

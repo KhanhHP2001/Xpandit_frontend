@@ -17,16 +17,16 @@ const LoginPage = () => {
       localStorage.setItem("accessToken", JSON.stringify(data.token));
       localStorage.setItem("role", JSON.stringify(data.user.role));
       localStorage.setItem("id", JSON.stringify(data.user._id));
-      navigate("/");
     } catch (error) {
       alert(error);
-      console.log(error);
+    } finally {
+      navigate("/");
     }
   };
 
   const nagivateToRegister = () => {
     navigate("/register");
-  }
+  };
 
   return (
     <div>
@@ -62,7 +62,9 @@ const LoginPage = () => {
                 </label>
               </div>
               <button type="submit">Log in</button>
-              <button type="submit" onClick={nagivateToRegister}>Register</button>
+              <button type="submit" onClick={nagivateToRegister}>
+                Register
+              </button>
             </form>
           </div>
         </div>
