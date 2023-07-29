@@ -2,6 +2,7 @@ import Navbar from "../../components/morecules/navbar/Navbar";
 import "./ManagerHome.scss";
 import Featured from "../../components/morecules/featured/Featured";
 import List from "../../components/morecules/table/Table";
+import { SidebarType } from "../../components/morecules/sidebar/Sidebar";
 
 const ManagerHome = () => {
   return (
@@ -10,11 +11,11 @@ const ManagerHome = () => {
         <Navbar />
         <div className="widgets"></div>
         <div className="charts">
-          <Featured />
+          <Featured employees={[]} />
         </div>
         <div className="listContainer">
           <div className="listTitle">Latest Transactions</div>
-          <List />
+          <List listData={[]} type={SidebarType.employees} />
         </div>
       </div>
     </div>
