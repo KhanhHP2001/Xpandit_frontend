@@ -3,6 +3,7 @@
     display: flex;
     align-items: center;
 
+  
     .image {
       width: 32px;
       height: 32px;
@@ -10,6 +11,7 @@
       margin-right: 10px;
       object-fit: cover;
     }
+  
   }
 
   .status {
@@ -23,6 +25,14 @@
     &.Pending {
       color: goldenrod;
       background-color: rgba(189, 189, 3, 0.103);
+    }
+    &.OnBoarding {
+      color: blue;
+      background-color: rgba(24, 8, 209, 0.103);
+    }
+    &.Rejected {
+      color: black;
+      background-color: rgba(32, 32, 27, 0.103);
     }
   }
 }

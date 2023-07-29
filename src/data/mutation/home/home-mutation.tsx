@@ -61,3 +61,23 @@ export const useDeleteEmployees = () => {
     },
   });
 };
+
+export const updateEmployees = async (employeesParams: EmployeesEntity) => {
+  const response = await imageInstance.put(
+    `/api/employee/${employeesParams._id}`,
+    employeesParams
+  );
+  return response;
+};
+
+export const useUpdateEmployees = () => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    (employeesParams: EmployeesEntity) => updateEmployees(employeesParams),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([employeesKey]);
+      },
+    }
+  );
+};

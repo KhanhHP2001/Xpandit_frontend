@@ -1,15 +1,27 @@
 import "./featured.scss";
 import PeopleIcon from "@mui/icons-material/People";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import {
+  EmployeeStatus,
+  EmployeesEntity,
+} from "../../../data/query/home/home-query";
 
 interface FeatureProps {
-  employeesLength: number;
+  employees: EmployeesEntity[];
 }
 
 const Featured = (props: FeatureProps) => {
-  const { employeesLength } = props;
+  const { employees } = props;
 
-  const totalSalaryThisMonth = 15000;
+  const totalSalaryThisMonth = () => {
+    let totalSalary = 0;
+    for (let i = 0; i < employees.length; i++) {
+      if (employees[i].status === EmployeeStatus.approved) {
+        totalSalary += employees[i].salary_per_date * employees[i].working_date;
+      }
+    }
+    return totalSalary;
+  };
 
   return (
     <div className="featured">
@@ -19,7 +31,7 @@ const Featured = (props: FeatureProps) => {
         </div>
         <div className="bottom">
           <PeopleIcon style={{ fontSize: 50 }} />
-          <p className="amount">{employeesLength}</p>
+          <p className="amount">{employees.length}</p>
           <p className="desc">Total employees in the company</p>
         </div>
       </div>
@@ -30,7 +42,7 @@ const Featured = (props: FeatureProps) => {
         </div>
         <div className="bottom">
           <MonetizationOnIcon style={{ fontSize: 50 }} />
-          <p className="amount">{totalSalaryThisMonth} vnd</p>
+          <p className="amount">{totalSalaryThisMonth()} vnd</p>
           <p className="desc">Total salary to be paid this month</p>
         </div>
       </div>

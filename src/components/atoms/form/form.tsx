@@ -5,18 +5,27 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useState } from "react";
-import { EmployeesEntity } from "../../../data/query/home/home-query";
+import {
+  EmployeeStatus,
+  EmployeesEntity,
+  FormType,
+} from "../../../data/query/home/home-query";
 import { useUploadImage } from "../../../data/mutation/home/home-mutation";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import dayjs from "dayjs";
 
 interface FormProps {
   getValue: (value: EmployeesEntity) => void;
+  value?: EmployeesEntity;
+  children: React.ReactNode;
+  type?: FormType;
 }
 
 export default function FormDialog(props: FormProps) {
-  const { getValue } = props;
+  const { getValue, value, children, type = FormType.submit } = props;
 
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -27,8 +36,18 @@ export default function FormDialog(props: FormProps) {
   const [date, setDate] = useState("");
   const [imageData, setImageData] = useState("");
   const { mutateAsync: uploadMutate } = useUploadImage();
+  const [status, setStatus] = useState("");
 
   const handleClickOpen = () => {
+    if (type == FormType.change && value) {
+      setName(value.name);
+      setDate(value.date);
+      setEmail(value.email);
+      setWorkingDate(value.working_date.toString());
+      setDateOff(value.date_off.toString());
+      setSalary(value.salary_per_date.toString());
+      setStatus(value.status ?? "");
+    }
     setOpen(true);
   };
 
@@ -50,15 +69,27 @@ export default function FormDialog(props: FormProps) {
   const handleSubmit = () => {
     if (name && email && workingDate && dateOff && salary && date) {
       setOpen(false);
-      getValue({
-        email: email,
-        name: name,
-        date: date,
-        working_date: parseInt(workingDate),
-        date_off: parseInt(dateOff),
-        salary_per_date: parseInt(salary),
-        avatar: imageData,
-      });
+      type == FormType.submit
+        ? getValue({
+            email: email,
+            name: name,
+            date: date,
+            working_date: parseInt(workingDate),
+            date_off: parseInt(dateOff),
+            salary_per_date: parseInt(salary),
+            avatar: imageData,
+          })
+        : getValue({
+            _id: value?._id,
+            email: email,
+            name: name,
+            date: date,
+            working_date: parseInt(workingDate),
+            date_off: parseInt(dateOff),
+            salary_per_date: parseInt(salary),
+            avatar: imageData,
+            status: status,
+          });
       clearCache();
     } else {
       alert("please input correct data");
@@ -83,7 +114,7 @@ export default function FormDialog(props: FormProps) {
   return (
     <div>
       <Button variant="outlined" onClick={handleClickOpen}>
-        Add Employees
+        {children}
       </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle style={{ color: "black" }}>Add new Employees</DialogTitle>
@@ -105,10 +136,10 @@ export default function FormDialog(props: FormProps) {
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-              value={date}
+              defaultValue={dayjs(new Date(date))}
               onChange={(e) => {
                 if (e) {
-                  setDate(e);
+                  setDate(e.toString());
                 }
               }}
             />
@@ -163,13 +194,43 @@ export default function FormDialog(props: FormProps) {
               setSalary(newValue);
             }}
           />
+          {type == FormType.change && (
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="dropdown-label">Select an option</InputLabel>
+              <Select
+                labelId="dropdown-label"
+                id="dropdown"
+                value={status}
+                onChange={(e) => {
+                  setStatus(e.target.value);
+                  console.log(status);
+                }}
+                label="Select an status"
+              >
+                <MenuItem value={EmployeeStatus.pending}>
+                  {EmployeeStatus.pending}
+                </MenuItem>
+                <MenuItem value={EmployeeStatus.approved}>
+                  {EmployeeStatus.approved}
+                </MenuItem>
+                <MenuItem value={EmployeeStatus.onBoarding}>
+                  {EmployeeStatus.onBoarding}
+                </MenuItem>
+                <MenuItem value={EmployeeStatus.rejected}>
+                  {EmployeeStatus.rejected}
+                </MenuItem>
+              </Select>
+            </FormControl>
+          )}
           <div>
             <input type="file" onChange={handleImageChange} />
           </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Add Employees</Button>
+          <Button onClick={handleSubmit}>
+            {type == FormType.submit ? "Add Employees" : "Update Employees"}
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

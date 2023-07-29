@@ -1,7 +1,13 @@
-export enum EmployeesStatus {
-  Null,
-  Approve,
-  Pending,
+export enum EmployeeStatus {
+  approved = "Approved",
+  pending = "Pending",
+  onBoarding = "OnBoarding",
+  rejected = "Rejected",
+}
+
+export enum FormType {
+  submit = "submit",
+  change = "change",
 }
 
 export type EmployeesEntity = {
@@ -12,4 +18,6 @@ export type EmployeesEntity = {
   date_off: number;
   salary_per_date: number;
   avatar?: string;
+  status?: string;
+  _id?: string;
 };
