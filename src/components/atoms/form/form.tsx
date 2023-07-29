@@ -10,12 +10,16 @@ import {
   EmployeesEntity,
   FormType,
 } from "../../../data/query/home/home-query";
-import { useUploadImage } from "../../../data/mutation/home/home-mutation";
+import { FileResponseDto, useUploadImage } from "../../../data/mutation/home/home-mutation";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import dayjs from "dayjs";
+import { Input } from '@mui/material';
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+
+
 
 interface FormProps {
   getValue: (value: EmployeesEntity) => void;
@@ -34,7 +38,7 @@ export default function FormDialog(props: FormProps) {
   const [dateOff, setDateOff] = useState("");
   const [salary, setSalary] = useState("");
   const [date, setDate] = useState("");
-  const [imageData, setImageData] = useState("");
+  const [imageData, setImageData] = useState<FileResponseDto | undefined>();
   const { mutateAsync: uploadMutate } = useUploadImage();
   const [status, setStatus] = useState("");
 
@@ -63,7 +67,7 @@ export default function FormDialog(props: FormProps) {
     setDateOff("");
     setSalary("");
     setDate("");
-    setImageData("");
+    setImageData(undefined);
   };
 
   const handleSubmit = () => {
@@ -99,12 +103,10 @@ export default function FormDialog(props: FormProps) {
   const handleImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const formData = new FormData();
     if (event.target.files && event.target.files.length > 0) {
-      formData.append("file", event.target.files[0]);
       try {
-        const data = await uploadMutate(formData);
-        setImageData(data.data.Location);
+        const data = await uploadMutate(event.target.files[0]);
+        setImageData(data);
       } catch (error) {
         console.log(error);
       }
@@ -203,7 +205,6 @@ export default function FormDialog(props: FormProps) {
                 value={status}
                 onChange={(e) => {
                   setStatus(e.target.value);
-                  console.log(status);
                 }}
                 label="Select an status"
               >
@@ -223,7 +224,8 @@ export default function FormDialog(props: FormProps) {
             </FormControl>
           )}
           <div>
-            <input type="file" onChange={handleImageChange} />
+            <Input style={{ marginTop: '1rem' }} type="file" onChange={handleImageChange} />
+            {imageData?.url && <img style={{ marginTop: '1rem' }} src={imageData.url} alt="avatar employee"/>}
           </div>
         </DialogContent>
         <DialogActions>

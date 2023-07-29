@@ -1,3 +1,5 @@
+import { FileResponseDto } from "../../mutation/home/home-mutation";
+
 export enum EmployeeStatus {
   approved = "Approved",
   pending = "Pending",
@@ -17,7 +19,7 @@ export type EmployeesEntity = {
   working_date: number;
   date_off: number;
   salary_per_date: number;
-  avatar?: string;
+  avatar?: FileResponseDto;
   status?: string;
   _id?: string;
 };

@@ -3,6 +3,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance, imageInstance } from "../../api/axios";
 import { EmployeesEntity } from "../../query/home/home-query";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { s3Client } from "../../../utils/hooks/useS3";
 
 const employeesKey = "employees";
 
@@ -35,15 +37,32 @@ export const useSubmitEmployees = () => {
   );
 };
 
-export const uploadImage = async (
-  img: FormData
-): Promise<{ data: { Location: string } }> => {
-  const response = await imageInstance.post("/api/file/upload", img);
-  return response;
+export interface FileResponseDto {key: string, url: string};
+
+export const uploadImage = async (file: File): Promise<FileResponseDto | undefined> => {
+    const current = new Date();
+    const currentTime = current.getTime();
+    const filename = `${currentTime}${file.name}`;
+    const params = new PutObjectCommand({ 
+        Bucket: 'my-whatsapp-bucket',
+        Key: String(filename),
+        Body: file,
+        ACL: 'public-read',
+        ContentType: file.type });
+    try {
+          const response = await s3Client.send(params);
+          if(response) return {
+            key: filename,
+            url: `https://${'my-whatsapp-bucket'}.s3.amazonaws.com/${filename}`
+          }
+        } catch (error) {
+          console.error("Error uploading file:", error);
+        }
+      return undefined;
 };
 
 export const useUploadImage = () => {
-  return useMutation((img: FormData) => uploadImage(img));
+  return useMutation((file: File) => uploadImage(file));
 };
 
 export const deleteEmployees = async (id: string) => {
