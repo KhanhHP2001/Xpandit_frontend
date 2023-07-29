@@ -4,6 +4,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import GroupIcon from "@mui/icons-material/Group";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import PaymentIcon from "@mui/icons-material/Payment";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface SideBarProps {
   onChange?: (e: SidebarType) => void;
@@ -13,6 +14,7 @@ export enum SidebarType {
   main = "Main",
   employees = "Employees",
   salary = "Salary",
+  bin = "Bin",
 }
 
 const Sidebar = (props: SideBarProps) => {
@@ -45,6 +47,12 @@ const Sidebar = (props: SideBarProps) => {
             <span>
               <AttachMoneyIcon style={{ fontSize: 16 }} />
               Tính Lương
+            </span>
+          </li>
+          <li onClick={() => onChange && onChange(SidebarType.bin)}>
+            <span>
+              <DeleteIcon style={{ fontSize: 16 }} />
+              Thùng rác
             </span>
           </li>
           <p className="title">PAYMENT</p>

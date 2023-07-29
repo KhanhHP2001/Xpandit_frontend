@@ -1,23 +1,15 @@
 // Example usage in another file
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { axiosInstance, imageInstance } from "../../api/axios";
-import { EmployeesEntity } from "../../query/home/home-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { axiosInstance } from "../../api/axios";
+import {
+  EmployeesEntity,
+  deletedEmployeesKey,
+} from "../../query/home/home-query";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../../../utils/hooks/useS3";
 
 const employeesKey = "employees";
-
-export const getEmployees = async () => {
-  const response = await axiosInstance.get("/api/employee");
-  return response.data;
-};
-
-export const useEmployees = () => {
-  return useQuery([employeesKey], getEmployees, {
-    retry: 10,
-  });
-};
 
 export const setNewEmployees = async (employeesParams: EmployeesEntity) => {
   const dataAxiosInstance = await axiosInstance.post(
@@ -77,7 +69,7 @@ export const useUploadImage = () => {
 };
 
 export const deleteEmployees = async (id: string) => {
-  const response = await imageInstance.patch("/api/employee/softDelete", {
+  const response = await axiosInstance.patch("/api/employee/softDelete", {
     employee_ids: [id],
   });
   return response;
@@ -88,12 +80,30 @@ export const useDeleteEmployees = () => {
   return useMutation((id: string) => deleteEmployees(id), {
     onSuccess: () => {
       queryClient.invalidateQueries([employeesKey]);
+      queryClient.invalidateQueries([deletedEmployeesKey]);
+    },
+  });
+};
+
+export const restoreEmployees = async (id: string) => {
+  const response = await axiosInstance.patch("/api/employee/restore", {
+    employee_ids: [id],
+  });
+  return response;
+};
+
+export const useRestoreEmployees = () => {
+  const queryClient = useQueryClient();
+  return useMutation((id: string) => restoreEmployees(id), {
+    onSuccess: () => {
+      queryClient.invalidateQueries([employeesKey]);
+      queryClient.invalidateQueries([deletedEmployeesKey]);
     },
   });
 };
 
 export const updateEmployees = async (employeesParams: EmployeesEntity) => {
-  const response = await imageInstance.put(
+  const response = await axiosInstance.put(
     `/api/employee/${employeesParams._id}`,
     employeesParams
   );
@@ -110,4 +120,20 @@ export const useUpdateEmployees = () => {
       },
     }
   );
+};
+
+export const hardDeleteEmployees = async (id: string) => {
+  const response = await axiosInstance.delete("/api/employee/hardDelete", {
+    data: { employee_ids: [id] },
+  });
+  return response;
+};
+
+export const useHardDeleteEmployees = () => {
+  const queryClient = useQueryClient();
+  return useMutation((id: string) => hardDeleteEmployees(id), {
+    onSuccess: () => {
+      queryClient.invalidateQueries([deletedEmployeesKey]);
+    },
+  });
 };

@@ -20,11 +20,8 @@ const UserProfilePage = () => {
       .then((response) => response.json())
       .then((data) => setUserData(data))
       .catch((error) => console.error("Error fetching user data:", error));
+    console.log(userData);
   }, [id]);
-
-  if (!userData) {
-    return <p>Loading...</p>;
-  }
 
   return (
     <div className="home">

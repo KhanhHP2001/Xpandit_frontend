@@ -27,6 +27,7 @@ export type EmployeesEntity = {
 };
 
 export const employeesKey = "employees";
+export const deletedEmployeesKey = "deletedEmployees";
 
 export const getEmployees = async () => {
   const response = await axiosInstance.get("/api/employee");
@@ -35,4 +36,13 @@ export const getEmployees = async () => {
 
 export const useEmployees = () => {
   return useQuery([employeesKey], getEmployees);
+};
+
+export const deletedEmployees = async () => {
+  const response = await axiosInstance.get("/api/employee/deleted");
+  return response.data;
+};
+
+export const useGetDeletedEmployees = () => {
+  return useQuery([deletedEmployeesKey], deletedEmployees);
 };

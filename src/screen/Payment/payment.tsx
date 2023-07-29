@@ -11,7 +11,7 @@ import { useState } from "react";
 import {
   TransactionEntity,
   useSubmitTransaction,
-} from "../../data/mutation/payment/payment_mutation";
+} from "../../data/mutation/payment/payment-mutation";
 
 enum paymentType {
   standard = "499000",

@@ -9,6 +9,7 @@ import FormDialog from "../../components/atoms/form/form";
 import {
   EmployeesEntity,
   useEmployees,
+  useGetDeletedEmployees,
 } from "../../data/query/home/home-query";
 import { useSubmitEmployees } from "../../data/mutation/home/home-mutation";
 import { useEffect, useState } from "react";
@@ -18,8 +19,17 @@ import { useNavigate } from "react-router-dom";
 const HomePage = () => {
   const { mutateAsync: submitMutate } = useSubmitEmployees();
   const [employees, setEmployees] = useState<EmployeesEntity[]>([]);
+  const [deletedEmployees, setDeletedEmployees] = useState<EmployeesEntity[]>(
+    []
+  );
   const [sideNavigate, setSideNavigate] = useState(SidebarType.main);
   const { data, isLoading, isError } = useEmployees();
+  const {
+    data: deletedData,
+    isLoading: deletedLoading,
+    isError: DeletedLoading,
+  } = useGetDeletedEmployees();
+
   const navigate = useNavigate();
 
   const isAuthenticated = () => {
@@ -37,7 +47,10 @@ const HomePage = () => {
     if (data) {
       setEmployees(data);
     }
-  }, [data]);
+    if (deletedData) {
+      setDeletedEmployees(deletedData);
+    }
+  }, [data, deletedData]);
 
   const handleSubmit = async (value: EmployeesEntity) => {
     try {
@@ -47,7 +60,7 @@ const HomePage = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || deletedLoading) {
     return (
       <div className="loading-screen">
         <CircularProgress />
@@ -55,7 +68,7 @@ const HomePage = () => {
     );
   }
 
-  if (isError) {
+  if (isError || DeletedLoading) {
     window.location.reload();
   }
 
@@ -72,6 +85,7 @@ const HomePage = () => {
           type={sideNavigate}
           handleSubmit={handleSubmit}
           employees={employees}
+          deletedEmployees={deletedEmployees}
         />
       </div>
     </div>
@@ -84,9 +98,10 @@ interface MainContentType {
   type: SidebarType;
   handleSubmit: (value: EmployeesEntity) => void;
   employees: EmployeesEntity[];
+  deletedEmployees: EmployeesEntity[];
 }
 const MainContent = (props: MainContentType) => {
-  const { type, handleSubmit, employees } = props;
+  const { type, handleSubmit, employees, deletedEmployees } = props;
   switch (type) {
     case SidebarType.main:
       return (
@@ -121,6 +136,13 @@ const MainContent = (props: MainContentType) => {
         <div className="listContainer">
           <div className="listTitle">Employees salary</div>
           <List type={SidebarType.salary} listData={employees} />
+        </div>
+      );
+    case SidebarType.bin:
+      return (
+        <div className="listContainer">
+          <div className="listTitle">Employees salary</div>
+          <List type={SidebarType.bin} listData={deletedEmployees} />
         </div>
       );
     default:
