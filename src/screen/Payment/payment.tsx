@@ -16,7 +16,7 @@ import {
 enum paymentType {
   standard = "499000",
   premium = "999000",
-  luxury = "1299000",
+  luxury = "2299000",
 }
 
 export default function MediaCard() {
@@ -46,7 +46,7 @@ export default function MediaCard() {
       case paymentType.luxury:
         return {
           name: "Luxury",
-          price: 1299000,
+          price: 2299000,
           user: parseId,
           bonus_month: 3,
         };
@@ -100,7 +100,7 @@ export default function MediaCard() {
                 Premium - 999.000 VNĐ
               </MenuItem>
               <MenuItem value={paymentType.luxury}>
-                LUX - 1.299.000 VNĐ
+                LUX - 2.299.000 VNĐ
               </MenuItem>
             </Select>
           </FormControl>
@@ -163,7 +163,7 @@ export default function MediaCard() {
                 Bonus Tháng: 3 tháng
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Giá tiền: 1.299.000 vnd
+                Giá tiền: 2.299.000 vnd
               </Typography>
             </div>
           )}
